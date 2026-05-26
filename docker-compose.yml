@@ -4,6 +4,8 @@
     container_name: kh-web
     ports:
       - "5000:5000"
+    env_file:
+      - .env
     environment:
       - DB_PATH=/data/monitoring.db
     volumes:

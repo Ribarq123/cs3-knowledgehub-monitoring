@@ -97,3 +97,24 @@ tr:hover {
     background: #fee2e2;
     color: #991b1b;
 }
+
+.login-card {
+    max-width: 600px;
+    margin: 100px auto;
+    text-align: center;
+}
+
+.login-button {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 14px 22px;
+    border-radius: 10px;
+    background: #2563eb;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.login-button:hover {
+    background: #1d4ed8;
+}

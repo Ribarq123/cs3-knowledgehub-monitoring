@@ -12,6 +12,9 @@
         <section class="card">
             <h2>Latest System Metrics</h2>
             <p class="source">Data source: {{ metrics.source }}</p>
+		{% if user %}
+		<p class="source">Logged in as: {{ user.name }} ({{ user.email }}) | <a href="/logout">Logout</a></p>
+		{% endif %}
 
             <div class="grid">
                 <div class="metric">
