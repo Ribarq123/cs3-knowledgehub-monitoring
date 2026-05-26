@@ -1,0 +1,31 @@
+﻿services:
+  web:
+    build: ./app
+    container_name: kh-web
+    ports:
+      - "5000:5000"
+    environment:
+      - DB_PATH=/data/monitoring.db
+    volumes:
+      - monitoring-data:/data
+    depends_on:
+      - collector
+    networks:
+      - kh-monitoring-net
+
+  collector:
+    build: ./collector
+    container_name: kh-collector
+    environment:
+      - DB_PATH=/data/monitoring.db
+    volumes:
+      - monitoring-data:/data
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - kh-monitoring-net
+
+volumes:
+  monitoring-data:
+
+networks:
+  kh-monitoring-net:

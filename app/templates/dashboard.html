@@ -1,0 +1,103 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>The Knowledge Hub Monitoring Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <main class="container">
+        <h1>The Knowledge Hub Monitoring Dashboard</h1>
+        <p class="subtitle">CS3 Infrastructure Monitoring Application</p>
+
+        <section class="card">
+            <h2>Latest System Metrics</h2>
+            <p class="source">Data source: {{ metrics.source }}</p>
+
+            <div class="grid">
+                <div class="metric">
+                    <span>Hostname</span>
+                    <strong>{{ metrics.hostname }}</strong>
+                </div>
+
+                <div class="metric">
+                    <span>Last Update</span>
+                    <strong>{{ metrics.timestamp }}</strong>
+                </div>
+
+                <div class="metric">
+                    <span>CPU Usage</span>
+                    <strong>{{ metrics.cpu_percent }}%</strong>
+                </div>
+
+                <div class="metric">
+                    <span>Memory Usage</span>
+                    <strong>{{ metrics.memory_percent }}%</strong>
+                </div>
+
+                <div class="metric">
+                    <span>Disk Usage</span>
+                    <strong>{{ metrics.disk_percent }}%</strong>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Docker Container Status</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Name</th>
+                        <th>Container ID</th>
+                        <th>Image</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for container in containers %}
+                    <tr>
+                        <td>{{ container.timestamp }}</td>
+                        <td>{{ container.name }}</td>
+                        <td>{{ container.container_id }}</td>
+                        <td>{{ container.image }}</td>
+                        <td>
+                            <span class="status {{ container.status }}">
+                                {{ container.status }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        <section class="card">
+            <h2>Recent Monitoring History</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Hostname</th>
+                        <th>CPU</th>
+                        <th>Memory</th>
+                        <th>Disk</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in history %}
+                    <tr>
+                        <td>{{ row.timestamp }}</td>
+                        <td>{{ row.hostname }}</td>
+                        <td>{{ row.cpu_percent }}%</td>
+                        <td>{{ row.memory_percent }}%</td>
+                        <td>{{ row.disk_percent }}%</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </main>
+</body>
+</html>
