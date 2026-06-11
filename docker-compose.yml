@@ -7,7 +7,7 @@
     env_file:
       - .env
     environment:
-      - DB_PATH=/data/monitoring.db
+      DB_PATH: /data/monitoring.db
     volumes:
       - monitoring-data:/data
     depends_on:
@@ -18,8 +18,11 @@
   collector:
     build: ./collector
     container_name: kh-collector
+    env_file:
+      - .env
     environment:
-      - DB_PATH=/data/monitoring.db
+      DB_PATH: /data/monitoring.db
+      COLLECTOR_INTERVAL: 30
     volumes:
       - monitoring-data:/data
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -31,3 +34,4 @@ volumes:
 
 networks:
   kh-monitoring-net:
+    driver: bridge
