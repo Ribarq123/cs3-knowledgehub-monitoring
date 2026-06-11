@@ -6,104 +6,152 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <main class="page">
-        <header>
-            <h1>The Knowledge Hub Monitoring Dashboard</h1>
-            <p>CS3 Infrastructure Monitoring Application</p>
+    <main class="page-shell">
+        <header class="hero">
+            <div>
+                <p class="eyebrow">CS3 Infrastructure Monitoring Application</p>
+                <h1>The Knowledge Hub Monitoring Dashboard</h1>
+                <p class="subtitle">
+                    Secure cloud-connected monitoring dashboard using Docker, Flask, Entra ID and Azure PostgreSQL.
+                </p>
+            </div>
+
+            <div class="hero-badge">
+                <span class="pulse"></span>
+                Monitoring Active
+            </div>
         </header>
 
-        <section class="card">
-            <h2>Latest System Metrics</h2>
+        <section class="dashboard-card main-card">
+            <div class="card-header">
+                <div>
+                    <h2>Latest System Metrics</h2>
+                    <p class="muted">Data source: <strong>{{ data_source }}</strong></p>
 
-            <p class="muted">Data source: {{ data_source }}</p>
-
-            {% if user %}
-            <p class="muted">
-                Logged in as: {{ user.name }} ({{ user.preferred_username }}) |
-                <a href="/logout">Logout</a>
-            </p>
-            {% endif %}
+                    {% if user %}
+                    <p class="muted">
+                        Logged in as:
+                        <strong>{{ user.name }}</strong>
+                        {% if user.preferred_username %}
+                            <span>({{ user.preferred_username }})</span>
+                        {% endif %}
+                        |
+                        <a href="/logout">Logout</a>
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
 
             <div class="metric-grid">
-                <div class="metric">
-                    <span>Hostname</span>
-                    <strong>{{ metrics.hostname }}</strong>
+                <div class="metric-card accent-blue">
+                    <span class="metric-label">Hostname</span>
+                    <strong class="metric-value small-value">{{ metrics.hostname }}</strong>
                 </div>
 
-                <div class="metric">
-                    <span>Last Update</span>
-                    <strong>{{ metrics.timestamp }}</strong>
+                <div class="metric-card accent-purple">
+                    <span class="metric-label">Last Update</span>
+                    <strong class="metric-value small-value">{{ metrics.timestamp }}</strong>
                 </div>
 
-                <div class="metric">
-                    <span>CPU Usage</span>
-                    <strong>{{ metrics.cpu_usage }}%</strong>
+                <div class="metric-card accent-green">
+                    <span class="metric-label">CPU Usage</span>
+                    <strong class="metric-value">{{ metrics.cpu_usage }}%</strong>
                 </div>
 
-                <div class="metric">
-                    <span>Memory Usage</span>
-                    <strong>{{ metrics.memory_usage }}%</strong>
+                <div class="metric-card accent-orange">
+                    <span class="metric-label">Memory Usage</span>
+                    <strong class="metric-value">{{ metrics.memory_usage }}%</strong>
                 </div>
 
-                <div class="metric">
-                    <span>Disk Usage</span>
-                    <strong>{{ metrics.disk_usage }}%</strong>
+                <div class="metric-card accent-red">
+                    <span class="metric-label">Disk Usage</span>
+                    <strong class="metric-value">{{ metrics.disk_usage }}%</strong>
                 </div>
             </div>
         </section>
 
-        <section class="card">
-            <h2>Docker Container Status</h2>
+        <section class="dashboard-card">
+            <div class="card-header">
+                <div>
+                    <h2>Docker Container Status</h2>
+                    <p class="muted">Latest container state collected by the monitoring collector.</p>
+                </div>
+            </div>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Timestamp</th>
-                        <th>Name</th>
-                        <th>Container ID</th>
-                        <th>Image</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for container in containers %}
-                    <tr>
-                        <td>{{ container.timestamp }}</td>
-                        <td>{{ container.name }}</td>
-                        <td>{{ container.container_id }}</td>
-                        <td>{{ container.image }}</td>
-                        <td>{{ container.status }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Name</th>
+                            <th>Container ID</th>
+                            <th>Image</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for container in containers %}
+                        <tr>
+                            <td>{{ container.timestamp }}</td>
+                            <td><strong>{{ container.name }}</strong></td>
+                            <td>{{ container.container_id }}</td>
+                            <td>{{ container.image }}</td>
+                            <td>
+                                {% if container.status == "running" %}
+                                    <span class="status-pill running">{{ container.status }}</span>
+                                {% elif container.status == "exited" %}
+                                    <span class="status-pill exited">{{ container.status }}</span>
+                                {% else %}
+                                    <span class="status-pill other">{{ container.status }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="empty-state">No container data available yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </section>
 
-        <section class="card">
-            <h2>Recent Monitoring History</h2>
+        <section class="dashboard-card">
+            <div class="card-header">
+                <div>
+                    <h2>Recent Monitoring History</h2>
+                    <p class="muted">Recent CPU, memory and disk usage records from the monitoring database.</p>
+                </div>
+            </div>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Timestamp</th>
-                        <th>Hostname</th>
-                        <th>CPU</th>
-                        <th>Memory</th>
-                        <th>Disk</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for row in history %}
-                    <tr>
-                        <td>{{ row.timestamp }}</td>
-                        <td>{{ row.hostname }}</td>
-                        <td>{{ row.cpu_usage }}%</td>
-                        <td>{{ row.memory_usage }}%</td>
-                        <td>{{ row.disk_usage }}%</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Hostname</th>
+                            <th>CPU</th>
+                            <th>Memory</th>
+                            <th>Disk</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in history %}
+                        <tr>
+                            <td>{{ row.timestamp }}</td>
+                            <td><strong>{{ row.hostname }}</strong></td>
+                            <td>{{ row.cpu_usage }}%</td>
+                            <td>{{ row.memory_usage }}%</td>
+                            <td>{{ row.disk_usage }}%</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="empty-state">No monitoring history available yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </section>
     </main>
 </body>
